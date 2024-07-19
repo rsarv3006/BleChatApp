@@ -1,0 +1,14 @@
+[!]  --- xcodebuild: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, id:F3F3F9D1-C23A-43EF-B56B-CA8EBAF331E2, OS:17.5, name:iPhone 15 Pro }
+{ platform:iOS Simulator, id:F3F3F9D1-C23A-43EF-B56B-CA8EBAF331E2, OS:17.5, name:iPhone 15 Pro }
+[BleChatApp] Compiling ContentView.swift
+[BleChatApp] Processing BleChatApp-Info.plist
+Signing BleChatApp.app (in target 'BleChatApp' from project 'BleChatApp')
+Build Succeeded
+
+-----------------------------
+-- xcodebuild.nvim summary --
+-----------------------------
+
+  ✔ Build Succeeded
+
