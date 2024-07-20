@@ -2,11 +2,7 @@ import CbShared
 import SwiftUI
 
 public class JoinScreenViewModel: ObservableObject {
-    @Published var displayName: String {
-        didSet {
-            discoveryService.deviceName = displayName
-        }
-    }
+    @Published var displayName: String
 
     @Published var foundDevices: [CBDevice] = []
 
@@ -23,14 +19,22 @@ public class JoinScreenViewModel: ObservableObject {
                     print("self is nil")
                     return
                 }
-                
+
                 let foundDevices = self.discoveryService.devices
-                
-                print(foundDevices.map({ device in
-                    return device.deviceName
-                }))
+
+                print(foundDevices.map { device in
+                    device.deviceName
+                })
                 self.foundDevices = foundDevices
             }
         }
+    }
+
+    public func onDisplayNameChanged() {
+        if displayName.isEmpty {
+            displayName = UIDevice.current.name
+        }
+
+        discoveryService.deviceName = displayName
     }
 }

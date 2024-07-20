@@ -1,11 +1,11 @@
-import SwiftUI
 import CbShared
+import SwiftUI
 
 public struct JoinScreen: View {
     @ObservedObject var viewModel: JoinScreenViewModel
 
     public init() {
-        self.viewModel = JoinScreenViewModel()
+        viewModel = JoinScreenViewModel()
     }
 
     public var body: some View {
@@ -23,7 +23,7 @@ public struct JoinScreen: View {
                         .padding()
 
                     Button {
-                        print("set button pressed")
+                        viewModel.onDisplayNameChanged()
                     } label: {
                         Text("Set Name")
                     }
@@ -40,7 +40,6 @@ public struct JoinScreen: View {
                     Text(device.deviceName)
                 }
             }
-            
         }
     }
 }
