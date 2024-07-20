@@ -4,7 +4,9 @@ import Foundation
 public class CBDeviceDiscoveryService: NSObject {
     private static let QueueName = "live.rjs.ble.chat-app"
 
-    public var deviceName: String
+    public var deviceName: String {
+        didSet { startAdvertising() }
+    }
 
     public private(set) var devices: [CBDevice] = []
 
@@ -19,12 +21,14 @@ public class CBDeviceDiscoveryService: NSObject {
                                         autoreleaseFrequency: .workItem,
                                         target: nil)
 
-    init(deviceName: String) {
+    public init(deviceName: String) {
         self.deviceName = deviceName
         super.init()
 
         centralManager = CBCentralManager(delegate: self, queue: cbQueue)
         peripheralManager = CBPeripheralManager(delegate: self, queue: cbQueue)
+        
+        startAdvertising()
     }
 
     private func startAdvertising() {
@@ -55,7 +59,9 @@ public class CBDeviceDiscoveryService: NSObject {
 }
 
 extension CBDeviceDiscoveryService: CBCentralManagerDelegate {
-    public func centralManagerDidUpdateState(_: CBCentralManager) {
+    public func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        guard central.state == .poweredOn else { return }
+        
         centralManager?.scanForPeripherals(withServices: [DiscoveryServiceId], options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
 
@@ -66,7 +72,7 @@ extension CBDeviceDiscoveryService: CBCentralManagerDelegate {
             name = deviceName
         }
 
-        let device = CBDevice(deviceName: deviceName, peripheral: peripheral)
+        let device = CBDevice(deviceName: name, peripheral: peripheral)
 
         DispatchQueue.main.async { [weak self] in
             self?.updateDeviceList(device: device)
