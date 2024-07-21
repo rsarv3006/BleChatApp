@@ -13,20 +13,37 @@ public struct ChatScreenBubble: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading) {
-            if message.sender.id != "SELF" {
+        if message.sender.id != "SELF" {
+            VStack(alignment: .leading) {
+                HStack { Spacer() }
                 Text(message.contents)
                     .font(.body)
                     .padding(EdgeInsets(top: isFirst ? 0 : 8, leading: 16, bottom: isLast ? 0 : 8, trailing: 16))
                     .background(Color.green)
                     .foregroundColor(.white)
-            } else {
-                Text(message.contents)
-                    .font(.body)
-                    .padding(EdgeInsets(top: isFirst ? 0 : 8, leading: 16, bottom: isLast ? 0 : 8, trailing: 16))
-                    .background(Color.blue)
-                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                Spacer()
             }
+            .padding()
+        } else {
+            VStack(alignment: .trailing) {
+                HStack {
+                    Spacer()
+                }
+                VStack(alignment: .trailing) {
+                    Text(message.timestamp.formatted())
+                        .font(.caption)
+                        .foregroundColor(.gray)
+
+                    Text(message.contents)
+                        .font(.body)
+                        .padding(EdgeInsets(top: isFirst ? 0 : 8, leading: 16, bottom: isLast ? 0 : 8, trailing: 16))
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+            }
+            .padding()
         }
     }
 }
