@@ -9,9 +9,28 @@ struct ChatScreen: View {
     }
 
     var body: some View {
-        ScrollView {
+        VStack {
             Text("Chat with \(viewModel.targetDevice.deviceName)")
                 .font(.title)
+
+            ScrollView {
+                LazyVStack {
+                    ForEach(viewModel.messages, id: \.id) { message in
+                        ChatScreenBubble(message: message, isFirst: false, isLast: false)
+                    }
+                }
+            }
+
+            HStack {
+                TextField("Input", text: $viewModel.messageInput)
+
+                Button {
+                    viewModel.didPressSend()
+                } label: {
+                    Text("Send")
+                }
+            }
+            .padding()
         }
     }
 }
