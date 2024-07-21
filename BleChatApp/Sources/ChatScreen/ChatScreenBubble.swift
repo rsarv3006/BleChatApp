@@ -16,12 +16,18 @@ public struct ChatScreenBubble: View {
         if message.sender.id != "SELF" {
             VStack(alignment: .leading) {
                 HStack { Spacer() }
-                Text(message.contents)
-                    .font(.body)
-                    .padding(EdgeInsets(top: isFirst ? 0 : 8, leading: 16, bottom: isLast ? 0 : 8, trailing: 16))
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+
+                VStack(alignment: .leading) {
+                    Text(message.timestamp.formatted())
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Text(message.contents)
+                        .font(.body)
+                        .padding(EdgeInsets(top: isFirst ? 0 : 8, leading: 16, bottom: isLast ? 0 : 8, trailing: 16))
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
                 Spacer()
             }
             .padding()
