@@ -8,7 +8,7 @@ public enum CBChatState {
     case PeripheralChat
 }
 
-class CBChatService: NSObject {
+public class CBChatService: NSObject {
     public var onMessageReceived: ((String) -> Void)?
     private var targetDevice: CBDevice?
     private var state = CBChatState.Scanning
@@ -24,7 +24,7 @@ class CBChatService: NSObject {
 
     private var pendingMessageData: Data?
 
-    init(target: CBDevice) {
+    public init(target: CBDevice) {
         super.init()
         targetDevice = target
         centralManager = CBCentralManager(delegate: self, queue: nil)
@@ -70,7 +70,7 @@ class CBChatService: NSObject {
 }
 
 extension CBChatService: CBCentralManagerDelegate {
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+    public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         guard central.state == .poweredOn else { return }
 
         guard central.isScanning == false else { return }
@@ -78,7 +78,7 @@ extension CBChatService: CBCentralManagerDelegate {
         startScan()
     }
 
-    func centralManager(_: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData _: [String: Any], rssi _: NSNumber) {
+    public func centralManager(_: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData _: [String: Any], rssi _: NSNumber) {
         guard peripheral.identifier == targetDevice?.peripheral.identifier else { return }
 
         centralManager?.connect(peripheral, options: nil)
@@ -88,7 +88,7 @@ extension CBChatService: CBCentralManagerDelegate {
         state = .CentralChat
     }
 
-    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         central.stopScan()
 
         peripheral.delegate = self
@@ -96,7 +96,7 @@ extension CBChatService: CBCentralManagerDelegate {
         peripheral.discoverServices([ChatServiceId])
     }
 
-    func centralManager(_: CBCentralManager, didFailToConnect _: CBPeripheral, error: (any Error)?) {
+    public func centralManager(_: CBCentralManager, didFailToConnect _: CBPeripheral, error: (any Error)?) {
         if let error {
             print(error.localizedDescription)
         }
@@ -105,7 +105,7 @@ extension CBChatService: CBCentralManagerDelegate {
         startScan()
     }
 
-    func centralManager(_: CBCentralManager, didDisconnectPeripheral _: CBPeripheral, error: (any Error)?) {
+    public func centralManager(_: CBCentralManager, didDisconnectPeripheral _: CBPeripheral, error: (any Error)?) {
         if let error {
             print(error.localizedDescription)
         }
@@ -131,7 +131,7 @@ extension CBChatService: CBCentralManagerDelegate {
 }
 
 extension CBChatService: CBPeripheralManagerDelegate {
-    func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
+    public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         guard peripheral.state == .poweredOn else { return }
 
         peripheralCharacteristic = CBMutableCharacteristic(
@@ -154,7 +154,7 @@ extension CBChatService: CBPeripheralManagerDelegate {
         peripheralManager?.startAdvertising(advertisementData)
     }
 
-    func peripheralManager(_: CBPeripheralManager, central: CBCentral, didSubscribeTo _: CBCharacteristic) {
+    public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didSubscribeTo _: CBCharacteristic) {
         print("Subcription")
 
         centralManager?.stopScan()
@@ -169,7 +169,7 @@ extension CBChatService: CBPeripheralManagerDelegate {
         }
     }
 
-    func peripheralManager(_: CBPeripheralManager, central _: CBCentral, didUnsubscribeFrom _: CBCharacteristic) {
+    public func peripheralManager(_: CBPeripheralManager, central _: CBCentral, didUnsubscribeFrom _: CBCharacteristic) {
         print("The central has unsubscribed from the peripheral")
 
         central = nil
@@ -178,7 +178,7 @@ extension CBChatService: CBPeripheralManagerDelegate {
                                            options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
 
-    func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+    public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         guard let request = requests.first, let data = request.value else { return }
 
         // Decode the message string and trigger the callback
@@ -201,7 +201,7 @@ extension CBChatService: CBPeripheralDelegate {
         }
     }
 
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
         if let error {
             print(error.localizedDescription)
             cleanUp()
@@ -213,7 +213,7 @@ extension CBChatService: CBPeripheralDelegate {
         }
     }
 
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: (any Error)?) {
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: (any Error)?) {
         if let error {
             print(error.localizedDescription)
             cleanUp()
@@ -229,7 +229,7 @@ extension CBChatService: CBPeripheralDelegate {
         }
     }
 
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let error = error {
             print("Characteristic value update failed: \(error.localizedDescription)")
             return
@@ -240,7 +240,7 @@ extension CBChatService: CBPeripheralDelegate {
         onMessageReceived?(message)
     }
 
-    func peripheral(_ peripheral: CBPeripheral,
+    public func peripheral(_ peripheral: CBPeripheral,
                     didUpdateNotificationStateFor characteristic: CBCharacteristic,
                     error: Error?) {
         // Perform any error handling if one occurred

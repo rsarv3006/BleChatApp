@@ -37,7 +37,7 @@ public struct JoinScreen: View {
 
             LazyVStack {
                 ForEach(viewModel.foundDevices, id: \.id) { device in
-                    Text(device.deviceName)
+                    NavigationLink(device.deviceName, destination: ChatScreen(device: device))
                 }
             }
         }
